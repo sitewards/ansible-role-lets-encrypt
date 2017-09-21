@@ -1,0 +1,119 @@
+---
+# Need to append https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt
+- name: "Initial set of certificate validation"
+  set_fact:
+    certificate_invalidated: false
+
+- name: "Create a build directory for fullchain assembly"
+  tempfile:
+    state: "directory"
+    suffix: "pki"
+  register: "build_dir"
+
+- name: "Create the base PKI directories"
+  file:
+    path: "{{ item.path }}"
+    owner: "root"
+    group: "root"
+    mode: "{{ item.permissions }}"
+    state: "directory"
+  with_items:
+    - path: "/etc/ssl/private"
+      permissions: "u=rwx,g=,o="
+    - path: "/etc/ssl/certs"
+      permissions: "u=rwx,g=rx,o=rx"
+    - path: "/etc/ssl/requests"
+      permissions: "u=rwx,g=o,o="
+
+- name: "Create the Lets Encrypt signing key"
+  openssl_privatekey:
+    path: "/etc/ssl/private/lets_encrypt.key"
+
+- name: "Create the resource wide key"
+  openssl_privatekey:
+    path: "/etc/ssl/private/{{ lets_encrypt_resource_name }}.key"
+
+- name: "Create the certificate signing request"
+  openssl_csr:
+    path: "/etc/ssl/requests/{{ lets_encrypt_resource_name }}.csr"
+    privatekey_path: "/etc/ssl/private/{{ lets_encrypt_resource_name }}.key"
+    state: "present"
+    common_name: "{{ lets_encrypt_common_name }}"
+    country_name: "{{ lets_encrypt_csr_country_name }}"
+    locality_name: "{{ lets_encrypt_csr_locality_name }}"
+    organization_name: "{{ lets_encrypt_csr_organization_name }}"
+    organizational_unit_name: "{{ lets_encrypt_csr_organizational_unit_name }}"
+    email_address: "{{ lets_encrypt_csr_email_address }}"
+    subject_alt_name: "{{ lets_encrypt_subject_alt_names }}"
+
+- name: "Make the request of the Lets Encrypt API"
+  letsencrypt:
+    remaining_days: "{{ lets_encrypt_renew_limit }}"
+    acme_directory: "{{ lets_encrypt_directory }}"
+    account_email: "{{ lets_encrypt_account_email }}"
+    account_key: "/etc/ssl/private/lets_encrypt.key"
+    challenge: "{{ lets_encrypt_challenge_type }}"
+    csr: "/etc/ssl/requests/{{ lets_encrypt_resource_name }}.csr"
+    dest: "/etc/ssl/certs/{{ lets_encrypt_resource_name }}.crt"
+  register: acme_data
+
+- name: "Set whether needs update"
+  set_fact:
+    certificate_invalidated: true
+  when: acme_data.challenge_data is not undefined
+
+- include_tasks: "providers/{{ lets_encrypt_challenge_type }}/{{ lets_encrypt_validation_provider }}.yml"
+  vars:
+    state: "present"
+  with_items: "{{ lets_encrypt_subject_alt_names }}"
+  when: certificate_invalidated == true
+
+- name: "Await propagation of the DNS records"
+  pause:
+    seconds: 30
+  when:
+    - lets_encrypt_challenge_type == "dns-01"
+    - certificate_invalidated == true
+
+- name: "Ask Lets Encrypt to validate and issue a new key"
+  letsencrypt:
+    acme_directory: "{{ lets_encrypt_directory }}"
+    account_key: "/etc/ssl/private/lets_encrypt.key"
+    challenge: "{{ lets_encrypt_challenge_type }}"
+    csr: "/etc/ssl/requests/{{ lets_encrypt_resource_name }}.csr"
+    dest: "/etc/ssl/certs/{{ lets_encrypt_resource_name }}.crt"
+    data: "{{ acme_data }}"
+  when: certificate_invalidated == true
+
+# Clean up the Route53 records
+- include_tasks: "providers/{{ lets_encrypt_challenge_type }}/{{ lets_encrypt_validation_provider }}.yml"
+  vars:
+    state: "absent"
+  with_items: "{{ lets_encrypt_subject_alt_names }}"
+  when: certificate_invalidated == true
+
+- name: "Copy the issued certificate to the build dir for assembly"
+  copy:
+    src: "/etc/ssl/certs/{{ lets_encrypt_resource_name }}.crt"
+    dest: "{{ build_dir.path }}/01-{{ lets_encrypt_resource_name }}.crt"
+    remote_src: "yes"
+  when: certificate_invalidated == true
+
+- name: "Fetch the CA certificate"
+  get_url:
+    url: "https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt"
+    dest: "{{ build_dir.path }}/02-chain.crt"
+  when: certificate_invalidated == true
+
+- name: "Assemble the full chain"
+  assemble:
+    src: "{{ build_dir.path }}"
+    dest: "/etc/ssl/certs/{{ lets_encrypt_resource_name }}.fullchain.crt"
+    owner: "root"
+    mode: "u=r,g=r,o=r"
+  when: certificate_invalidated == true
+
+- name: "Cleanup build dir"
+  file:
+    state: "absent"
+    path: "{{ build_dir.path }}/"

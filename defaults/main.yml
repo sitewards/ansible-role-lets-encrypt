@@ -1,0 +1,77 @@
+---
+## The python package for pyopenssl; a requirement for the openssl task
+lets_encrypt_python_package: "python3-openssl"
+
+## The account email for Lets Encrypt.
+## (Required)
+# lets_encrypt_account_email:
+
+## The directory used for Lets Encrypt to generate certificates
+## Defaults to staging for testing.
+lets_encrypt_directory: "https://acme-staging.api.letsencrypt.org/directory"
+
+## How many days before the certificate expires it should be renewed
+lets_encrypt_renew_limit: 30
+
+## The resource name. Most often, this will be the fqdn of the site.
+lets_encrypt_resource_name: "website"
+
+## The type of challenge that Lets Encrypt performs to check the server exists.
+## Should be one of:
+## - http-01
+## - dns-01
+## - tls-sni-02
+lets_encrypt_challenge_type: "dns-01"
+
+## The common or "root" name of this TLS certificate
+## (Required)
+# lets_encrypt_common_name:
+
+## A list of the alternative names that the TLS certificate can make available. This can be a set of domains, such as
+## DNS:sitewards.com
+## DNS:www.sitewards.com
+##
+## Must be prefixed with the appropriate spec (DNS, IP)
+lets_encrypt_subject_alt_names: [""]
+
+## The country name for the CSR. A full list of country codes can be found here:
+## https://clients.hostingireland.ie/knowledgebase/2042/2-letter-country-codes-for-CSR-generation.html
+## (Required)
+# lets_encrypt_csr_country_name: "DE"
+
+## The state (locality) of the organisation for the CSR
+## (Required)
+# lets_encrypt_csr_locality_name: "Hessen"
+
+## The organisation responsible for the service behind TLS
+## (Required)
+# lets_encrypt_csr_organization_name:
+
+## The organisational unit responsible for the service behind TLS
+## (Required)
+# lets_encrypt_csr_organizational_unit_name
+
+## The email address of the CSR to use
+## (Required)
+# lets_encrypt_csr_email_address: "example.user@sitewards.com"
+
+# At least some of the below options are required. See README for further details.
+
+## The DNS provider used to validate the request. Can be one of:
+## - route53
+# lets_encrypt_validation_provider:
+
+## The path to the public directory used to validate the Lets Encrypt resources
+## (Currently unused)
+# lets_encrypt_http_path:
+
+# Cloud specific options. May be required, depending on the mechanism used to prove identity of the connctoin.
+
+## The AWS IAM users access key
+# lets_encrypt_aws_access_key_id
+
+## The AWS IAM users
+# lets_encrypt_aws_secret_access_key
+
+## The AWS Route53 zone to modify during provisioning
+# lets_encrypt_aws_route53_dns_zone
