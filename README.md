@@ -72,6 +72,14 @@ This should work!
 The variables that are available are defined in defaults/main.yml. There are various requirements; check the file for
 further details.
 
+## Debugging
+
+The task can be skipped by not defining a "lets_encrypt_common_name" variable (undefined by default). This is configured
+so that the role can be provisioned across all environments (including internally, where there is no mechanism to
+validate lets encrypt).
+
+Should the task be skipping, take a look at that.
+
 ## Contact
 
 https://www.sitewards.com/
