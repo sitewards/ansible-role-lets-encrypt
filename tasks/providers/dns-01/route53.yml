@@ -1,17 +1,25 @@
 ---
-- name: "Create the domain from the SAN indicator"
-  set_fact:
-    fqdn: "{{ item | regex_replace('^DNS:', '') }}"
+## Service Configuration
+# lets_encrypt_resources:
+#   - domain: "sitewards.com"
+#     provider:
+#       type: "route53"
+#       mechanism: "dns-01"
+#       configuration:
+##
+##       The DNS zone that this record is a part of.
+##
+#        zone: "sitewards.com"
 
-# Note that TXT and SPF records must be surrounded by quotes when sent to Route 53:
+## Note that TXT and SPF records must be surrounded by quotes when sent to Route 53:
 - name: "Ensure the TXT record in Route53 is up to date"
   route53:
     aws_access_key: "{{ lets_encrypt_aws_access_key_id }}"
     aws_secret_key: "{{ lets_encrypt_aws_secret_access_key }}"
     overwrite: True
-    state: "{{ state }}"
-    zone: "{{ lets_encrypt_aws_route53_dns_zone }}"
-    record: "{{ acme_data.challenge_data[fqdn]['dns-01']['resource'] }}.{{ fqdn }}"
+    state: "{{ lets_encrypt_resource_state }}"
+    zone: "{{ lets_encrypt_provider_configuration['zone'] }}"
+    record: "{{ acme_data.challenge_data[lets_encrypt_resource_domain]['dns-01']['resource'] }}.{{ lets_encrypt_resource_domain }}"
     type: "TXT"
     ttl: 300
-    value: "\"{{ acme_data.challenge_data[fqdn]['dns-01']['resource_value'] }}\""
+    value: "\"{{ acme_data.challenge_data[lets_encrypt_resource_domain]['dns-01']['resource_value'] }}\""

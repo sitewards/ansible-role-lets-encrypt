@@ -10,6 +10,14 @@ itself.
 - Python2[1](https://github.com/ansible/ansible/issues/30690)
 - pip (installs dependencies if required)
 
+## Terminology
+
+| Word      | Meaning                                                                                                          |
+|-----------|------------------------------------------------------------------------------------------------------------------|
+| provider  | A mechanism that provides proof that the server is owned by the same tooling that is requesting the certificate  |
+| mechanism | The Lets Encrypt protocol used for verifying server authentication                                               |
+| type      | The type of provider that will be implementing the required authorisation                                        |
+
 ## Caveats
 
 ### Limited Support
@@ -38,9 +46,10 @@ default), but the role of Ansible is to run machines including PKI / expiring ce
 
 Include this in another ansible playbook. For sample, consider a generic server playbook:
 
-```
----
+```yaml
 # $PLAYBOOK_ROOT/server.yaml
+
+---
 - name: "server"
   hosts: all
   become: true
@@ -49,8 +58,9 @@ Include this in another ansible playbook. For sample, consider a generic server 
 
 Add the reference for the role:
 
-```
+```yaml
 # $PLAYBOOK_ROOT/server.yaml
+
 # ...
 become_user: "root"
 roles
@@ -59,13 +69,20 @@ roles
 
 This will allow the role to be discovered. Then, add this repo as a submodule:
 
-```
-$ cd path/to/playbook/root
-$ mkdir roles/
-$ git submodule add https://github.com/sitewards/ansible-role-lets-encrypt roles/sitewards.lets-encrypt
+```bash
+    $ cd path/to/playbook/root
+    $ mkdir roles/
+    $ git submodule add https://github.com/sitewards/ansible-role-lets-encrypt roles/sitewards.lets-encrypt
 ```
 
 This should work!
+
+## Design Notes:
+
+### Non goal: Allow multiple certificates
+
+This role deliberately does not factor in the usage of multiple certificates. This can be accomplished by using the role
+multiple times, with different variables. [3](https://stackoverflow.com/questions/32802956/ansible-running-role-multiple-times-with-different-parameter-sets)
 
 ## Configuration
 
@@ -79,6 +96,28 @@ so that the role can be provisioned across all environments (including internall
 validate lets encrypt).
 
 Should the task be skipping, take a look at that.
+
+## Development
+
+### Yaml files
+
+Because files are dynamically included, the suffix ".yml" *must* be used for all yaml files.
+
+### Comments
+
+Comments starting with:
+
+```yaml
+# foo: "bar"
+```
+
+Are examples. Comments starting with:
+
+```yaml
+## This is example text.
+```
+
+are documentation
 
 ## Contact
 
