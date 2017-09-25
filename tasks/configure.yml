@@ -1,0 +1,17 @@
+---
+## Determines the appropriate provider to make the request of, and supplies the right data
+## Expects a record of the form:
+##
+#  resource:
+#    domain: "sitewards.com"
+#    provider:
+#      mechanism: "dns-01"
+#      type: "route53"
+#      configuration:
+#        ${KEY}: ${VALUE}
+
+- name: "Include the required provider"
+  include_tasks: "providers/{{ resource['provider']['mechanism'] }}/{{ resource['provider']['type'] }}.yml"
+  vars:
+    lets_encrypt_resource_domain: "{{ resource['domain'] }}"
+    lets_encrypt_provider_configuration: "{{ resource['provider']['configuration'] }}"

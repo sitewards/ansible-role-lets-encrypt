@@ -27,12 +27,39 @@ lets_encrypt_challenge_type: "dns-01"
 ## (Required)
 # lets_encrypt_common_name:
 
-## A list of the alternative names that the TLS certificate can make available. This can be a set of domains, such as
-## DNS:sitewards.com
-## DNS:www.sitewards.com
+## A list of the domains that are to be configured. At least one of the following is required:
+##   The FQDN domain that will be added to the certificate.
 ##
-## Must be prefixed with the appropriate spec (DNS, IP)
-lets_encrypt_subject_alt_names: [""]
+#  - domain: www.sitewards.com
+##
+##   Provider specific configuration. The minimal required for this is "type". Each type has it's own, specific
+##   configuration; the below example is for AWS Route53, but each is different. See the top of the provider file
+##   for specific notes.
+##
+#    provider:
+##
+##     The mechanism by which the provider will be configured. Can be one of:
+##       - dns-01
+##       - tls-sni-01
+##       - http-01
+##
+#      mechanism: dns-01
+##
+##     The method that will be used to configure the provider
+##
+#      type: route53
+##
+##     Service specific configuration. See the top of the service configuration files for the format.
+##
+#      configuration:
+##
+lets_encrypt_resources: [""]
+#  - domain: "sitewards.com"
+#    provider:
+#      mechanism: "dns-01"
+#      type: "route53"
+#      configuration:
+#        zone: "sitewards.com"
 
 ## The country name for the CSR. A full list of country codes can be found here:
 ## https://clients.hostingireland.ie/knowledgebase/2042/2-letter-country-codes-for-CSR-generation.html
