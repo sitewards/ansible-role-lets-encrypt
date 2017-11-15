@@ -2,6 +2,8 @@
 ## The python package for pyopenssl; a requirement for the openssl task
 lets_encrypt_python_package: "python3-openssl"
 
+lets_encrypt_agreement: "https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf"
+
 ## The account email for Lets Encrypt.
 ## (Required)
 # lets_encrypt_account_email:
