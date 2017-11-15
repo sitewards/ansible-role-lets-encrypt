@@ -60,6 +60,7 @@
     account_email: "{{ lets_encrypt_account_email }}"
     account_key: "/etc/ssl/private/lets_encrypt.key"
     challenge: "{{ lets_encrypt_challenge_type }}"
+    agreement: "{{ lets_encrypt_agreement }}"
     csr: "/etc/ssl/requests/{{ lets_encrypt_resource_name }}.csr"
     dest: "/etc/ssl/certs/{{ lets_encrypt_resource_name }}.crt"
   register: acme_data
@@ -89,6 +90,7 @@
     acme_directory: "{{ lets_encrypt_directory }}"
     account_key: "/etc/ssl/private/lets_encrypt.key"
     challenge: "{{ lets_encrypt_challenge_type }}"
+    agreement: "{{ lets_encrypt_agreement }}"
     csr: "/etc/ssl/requests/{{ lets_encrypt_resource_name }}.csr"
     dest: "/etc/ssl/certs/{{ lets_encrypt_resource_name }}.crt"
     data: "{{ acme_data }}"
