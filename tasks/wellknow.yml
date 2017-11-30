@@ -1,0 +1,18 @@
+---
+
+- set_fact:
+    dir_state: "{{ lets_encrypt_resource_state }}"
+
+- set_fact:
+    dir_state: "directory"
+  when: lets_encrypt_resource_state == "present"
+
+- name: Ensure well-known dir exist
+  file:
+    path: "{{ lets_encrypt_http_path }}/.well-known"
+    state: "{{ dir_state }}"
+
+- name: Ensure acme-challenge dir exist
+  file:
+    path: "{{ lets_encrypt_http_path }}/.well-known/acme-challenge"
+    state: "{{ dir_state }}"

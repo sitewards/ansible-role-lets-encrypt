@@ -1,4 +1,28 @@
 ---
 - include: "dependencies.yml"
+
+# Create the /.well-known/acme-challenge dir
+- include: "wellknow.yml"
+  vars:
+    lets_encrypt_resource_state: present
+  when:
+    - lets_encrypt_challenge_type == 'http-01'
+
+
 - include: "lets_encrypt.yml"
   when: lets_encrypt_common_name is not undefined
+
+
+# Remove the /.well-known/acme-challenge dir
+- include: "wellknow.yml"
+  vars:
+    lets_encrypt_resource_state: absent
+  when:
+    - lets_encrypt_challenge_type == 'http-01'
+
+# Concatenate crt & key for HAproxy SSL support
+- include: "haproxy.yml"
+  when:
+    - lets_encrypt_ssl_mode == 'haproxy'
+    - lets_encrypt_common_name is not undefined
+    - lets_encrypt_challenge_type == 'http-01'

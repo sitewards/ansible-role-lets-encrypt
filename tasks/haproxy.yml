@@ -1,0 +1,14 @@
+---
+- name: Ensure HAProxy SSL dir exist
+  become: true
+  file:
+    path: /etc/haproxy/ssl
+    state: directory
+  when: lets_encrypt_certificate_invalidated == true
+  
+# TODO : change raw modules with assemble or other.
+# Concatenate crt & key fort HAProxy SSL Support
+- name: Assemble key and crt for HAProxy
+  become: true
+  raw: cat /etc/ssl/certs/{{ lets_encrypt_resource_name }}.fullchain.crt /etc/ssl/private/{{ lets_encrypt_resource_name }}.key > /etc/haproxy/ssl/{{ lets_encrypt_resource_name }}.pem
+  when: lets_encrypt_certificate_invalidated == true
