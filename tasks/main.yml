@@ -2,7 +2,7 @@
 - include: "dependencies.yml"
 
 # Create the /.well-known/acme-challenge dir
-- include: "wellknow.yml"
+- include: "wellknown.yml"
   vars:
     lets_encrypt_resource_state: present
   when:
@@ -14,7 +14,7 @@
 
 
 # Remove the /.well-known/acme-challenge dir
-- include: "wellknow.yml"
+- include: "wellknown.yml"
   vars:
     lets_encrypt_resource_state: absent
   when:

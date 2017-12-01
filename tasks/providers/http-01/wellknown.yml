@@ -1,17 +1,7 @@
 ---
-#      # acme_data.challenge_data =>
-#      # "DNS NAME": {
-#      #       "dns-01": {
-#      #           "resource": "_acme-challenge", 
-#      #           "resource_value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-#      #       }, 
-#      #       "http-01": {
-#      #           "resource": ".well-known/acme-challenge/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 
-#      #           "resource_value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.yyyyyyyy-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
-#      #       }
-#      #   },
+## Creating & adding the well-known acme-challenge file with data
 
-- name: Copy HTTP well-know ACME Challege data to file
+- name: Copy HTTP well-known ACME Challege data to file
   copy:
     content: "{{ acme_data.challenge_data[lets_encrypt_resource_domain]['http-01']['resource_value'] }}"
     dest: "{{ lets_encrypt_http_path }}/{{ acme_data.challenge_data[lets_encrypt_resource_domain]['http-01']['resource'] }}"

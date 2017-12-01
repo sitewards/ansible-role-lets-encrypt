@@ -4,10 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to 
 [Semantic Versioning](http://semver.org/).
 
+## 1.1.1
+
+### changed
+- Correcting some typo error (wellknow => wellknown)
+
+### Removed
+- Debug comments
+
 ## 1.1.0
 
 ### Added
-- http-01 (wellknow acme-challenge) support.
+- http-01 (wellknown acme-challenge) support.
 - SSL crt & key concatenation for HAProxy compatibility.
 - Ansible Galaxy file structure (to be used with ansible-galaxy install git@...).
 
