@@ -55,7 +55,7 @@
 
 - name: "Make the request of the Lets Encrypt API"
   letsencrypt:
-    remaining_days: "{{ lets_encrypt_renew_limit }}"
+    remaining_days: {{ lets_encrypt_renew_limit }}
     acme_directory: "{{ lets_encrypt_directory }}"
     account_email: "{{ lets_encrypt_account_email }}"
     account_key: "/etc/ssl/private/lets_encrypt.key"
