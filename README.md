@@ -23,7 +23,7 @@ itself.
 ### Limited Support
 
 While the role was written in an extensible way, and wll be extended as requirements dicatate to include other
-Lets Encrypt auth mechanisms or cloud providers, only DNS by Route53 has been implemented so far.
+Lets Encrypt auth mechanisms or cloud providers, new DNS by Route53 and wellknown acme-challenge have been implemented.
 
 ### Manually combines full chain
 

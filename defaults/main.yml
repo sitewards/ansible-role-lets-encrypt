@@ -10,7 +10,11 @@ lets_encrypt_agreement: "https://letsencrypt.org/documents/LE-SA-v1.2-November-1
 
 ## The directory used for Lets Encrypt to generate certificates
 ## Defaults to staging for testing.
-lets_encrypt_directory: "https://acme-staging.api.letsencrypt.org/directory"
+lets_encrypt_mode: "stage"
+lets_encrypt_url_prod: "https://acme-v01.api.letsencrypt.org/directory" # PROD
+lets_encrypt_url_stage: "https://acme-staging.api.letsencrypt.org/directory" # STAGE
+
+lets_encrypt_directory: "{{ vars['lets_encrypt_url_'+lets_encrypt_mode] }}" # set STAGE or PROD URL
 
 ## How many days before the certificate expires it should be renewed
 lets_encrypt_renew_limit: 30
@@ -24,6 +28,12 @@ lets_encrypt_resource_name: "website"
 ## - dns-01
 ## - tls-sni-02
 lets_encrypt_challenge_type: "dns-01"
+
+## The type of the ssl services for SSL generation
+# - haproxy
+# - nginx # not yet implemented
+# - apache # not yet implemented
+lets_encrypt_ssl_mode: "haproxy"
 
 ## The common or "root" name of this TLS certificate
 ## (Required)

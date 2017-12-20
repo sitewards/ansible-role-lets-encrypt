@@ -1,0 +1,8 @@
+---
+## Creating & adding the well-known acme-challenge file with data
+
+- name: Copy HTTP well-known ACME Challege data to file
+  copy:
+    content: "{{ acme_data.challenge_data[lets_encrypt_resource_domain]['http-01']['resource_value'] }}"
+    dest: "{{ lets_encrypt_http_path }}/{{ acme_data.challenge_data[lets_encrypt_resource_domain]['http-01']['resource'] }}"
+  when: lets_encrypt_resource_state == "present"
