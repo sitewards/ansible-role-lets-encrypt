@@ -19,6 +19,7 @@ itself.
 | type      | The type of provider that will be implementing the required authorisation                                        |
 
 ## Caveats
+Please Note that the lets_encrypt_common_name and all domains configured in lets_encrypt_resources should resolve and have valid A records.
 
 ### Limited Support
 
