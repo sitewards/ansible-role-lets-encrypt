@@ -107,10 +107,10 @@ lets_encrypt_resources: [""]
 # Cloud specific options. May be required, depending on the mechanism used to prove identity of the connctoin.
 
 ## The AWS IAM users access key
-# lets_encrypt_aws_access_key_id
+lets_encrypt_aws_access_key_id: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
 
 ## The AWS IAM users
-# lets_encrypt_aws_secret_access_key
+lets_encrypt_aws_secret_access_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
 
 ## The AWS Route53 zone to modify during provisioning
 # lets_encrypt_aws_route53_dns_zone
