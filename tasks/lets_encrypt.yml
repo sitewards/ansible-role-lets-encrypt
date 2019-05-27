@@ -8,7 +8,7 @@
   tempfile:
     state: "directory"
     suffix: "pki"
-  register: "build_dir"
+  register: "lets_encrypt_certificate_build_dir"
 
 - name: "Create the base PKI directories"
   file:
@@ -63,7 +63,7 @@
     challenge: "{{ lets_encrypt_challenge_type }}"
     agreement: "{{ lets_encrypt_agreement }}"
     csr: "/etc/ssl/requests/{{ lets_encrypt_resource_name }}.csr"
-    dest: "{{ build_dir.path }}/01-{{ lets_encrypt_resource_name }}.crt"
+    dest: "{{ lets_encrypt_certificate_build_dir.path }}/01-{{ lets_encrypt_resource_name }}.crt"
   register: acme_data
 
 - name: "Set whether needs update"
@@ -95,7 +95,7 @@
     challenge: "{{ lets_encrypt_challenge_type }}"
     agreement: "{{ lets_encrypt_agreement }}"
     csr: "/etc/ssl/requests/{{ lets_encrypt_resource_name }}.csr"
-    dest: "{{ build_dir.path }}/01-{{ lets_encrypt_resource_name }}.crt"
+    dest: "{{ lets_encrypt_certificate_build_dir.path }}/01-{{ lets_encrypt_resource_name }}.crt"
     data: "{{ acme_data }}"
   when: lets_encrypt_certificate_invalidated == true
 
@@ -110,7 +110,7 @@
 
 - name: "Copy the issued certificate to the ssl cert directory for reference"
   copy:
-    src: "{{ build_dir.path }}/01-{{ lets_encrypt_resource_name }}.crt"
+    src: "{{ lets_encrypt_certificate_build_dir.path }}/01-{{ lets_encrypt_resource_name }}.crt"
     dest: "/etc/ssl/certs/{{ lets_encrypt_resource_name }}.crt"
     remote_src: "yes"
   when: lets_encrypt_certificate_invalidated == true
@@ -118,12 +118,12 @@
 - name: "Fetch the CA certificate"
   get_url:
     url: "https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt"
-    dest: "{{ build_dir.path }}/02-chain.crt"
+    dest: "{{ lets_encrypt_certificate_build_dir.path }}/02-chain.crt"
   when: lets_encrypt_certificate_invalidated == true
 
 - name: "Assemble the full chain certificate"
   assemble:
-    src: "{{ build_dir.path }}"
+    src: "{{ lets_encrypt_certificate_build_dir.path }}"
     dest: "/etc/ssl/certs/{{ lets_encrypt_resource_name }}.fullchain.crt"
     owner: "root"
     mode: "u=r,g=r,o=r"
@@ -132,4 +132,4 @@
 - name: "Cleanup build dir"
   file:
     state: "absent"
-    path: "{{ build_dir.path }}/"
+    path: "{{ lets_encrypt_certificate_build_dir.path }}/"
