@@ -33,14 +33,6 @@
   openssl_privatekey:
     path: "/etc/ssl/private/{{ lets_encrypt_resource_name }}.key"
 
-# See http://docs.ansible.com/ansible/latest/playbooks_filters.html#extracting-values-from-containers
-- name: "Create the list of domains valid for this certificate"
-  set_fact:
-    lets_encrypt_domains: "{{ lets_encrypt_resources | json_query('[*].domain') | list }}"
-- name: "Create the list of alt domains valid for this certificate"
-  set_fact:
-    lets_encrypt_subject_alt_names: "{{ lets_encrypt_domains | map('regex_replace', '^(.*)$', 'DNS:\\1') | list }}"
-
 - name: "Create the certificate signing request"
   openssl_csr:
     path: "/etc/ssl/requests/{{ lets_encrypt_resource_name }}.csr"
