@@ -1,0 +1,28 @@
+---
+## Service Configuration
+# lets_encrypt_resources:
+#   - domain: "sitewards.com"
+#     provider:
+#       type: "azure-dns"
+#       mechanism: "dns-01"
+#       configuration:
+##
+##       The DNS zone that this record is a part of.
+##
+#        zone: "sitewards.com"
+
+## Note that TXT and SPF records must be surrounded by quotes when sent to Route 53:
+- name: "Ensure the TXT record in Azure DNS is up to date"
+  azure_rm_dnsrecordset:
+    client_id: "{{ lets_encrypt_resource_azure_client_id }}"
+    secret: "{{ lets_encrypt_resource_azure_client_secret }}"
+    subscription_id: "{{ lets_encrypt_resource_azure_subscription_id }}"
+    tenant: "{{ lets_encrypt_resource_azure_tenant_id }}"
+    resource_group: "{{ lets_encrypt_resource_azure_resource_group }}"
+    relative_name: "{{ acme_data.challenge_data[lets_encrypt_resource_domain]['dns-01']['resource'] }}.{{ lets_encrypt_resource_domain }}"
+    zone_name: "{{ lets_encrypt_provider_configuration['zone'] }}"
+    record_type: TXT
+    state: "{{ lets_encrypt_resource_state }}"
+    time_to_live: 300
+    records:
+    - entry: "\"{{ acme_data.challenge_data[lets_encrypt_resource_domain]['dns-01']['resource_value'] }}\""

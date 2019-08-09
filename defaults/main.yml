@@ -114,3 +114,21 @@ lets_encrypt_resources: [""]
 
 ## The AWS Route53 zone to modify during provisioning
 # lets_encrypt_aws_route53_dns_zone
+
+
+## Azure access credentials
+
+## Azure client ID. Use when authenticating with a Service Principal.
+lets_encrypt_resource_azure_client_id: ""
+
+## Azure client secret. Use when authenticating with a Service Principal.
+lets_encrypt_resource_azure_client_secret: ""
+
+## Azure subscription ID
+lets_encrypt_resource_azure_subscription_id: ""
+
+## Azure tenant ID. Use when authenticating with a Service Principal.
+lets_encrypt_resource_azure_tenant_id: ""
+
+## Azure reource group name
+lets_encrypt_resource_azure_resource_group: ""
