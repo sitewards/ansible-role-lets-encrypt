@@ -47,13 +47,15 @@
     subject_alt_name: "{{ lets_encrypt_subject_alt_names }}"
 
 - name: "Make the request of the Lets Encrypt API"
-  letsencrypt:
-    remaining_days: {{ lets_encrypt_renew_limit }}
+  acme_certificate:
+    remaining_days: "{{ lets_encrypt_renew_limit }}"
     acme_directory: "{{ lets_encrypt_directory }}"
+    acme_version: 2
     account_email: "{{ lets_encrypt_account_email }}"
     account_key: "/etc/ssl/private/lets_encrypt.key"
     challenge: "{{ lets_encrypt_challenge_type }}"
     agreement: "{{ lets_encrypt_agreement }}"
+    terms_agreed: yes
     csr: "/etc/ssl/requests/{{ lets_encrypt_resource_name }}.csr"
     dest: "{{ lets_encrypt_certificate_build_dir.path }}/01-{{ lets_encrypt_resource_name }}.crt"
   register: acme_data
@@ -81,11 +83,13 @@
     - lets_encrypt_challenge_type == "dns-01"
 
 - name: "Ask Lets Encrypt to validate and issue a new key"
-  letsencrypt:
+  acme_certificate:
     acme_directory: "{{ lets_encrypt_directory }}"
+    acme_version: 2
     account_key: "/etc/ssl/private/lets_encrypt.key"
     challenge: "{{ lets_encrypt_challenge_type }}"
     agreement: "{{ lets_encrypt_agreement }}"
+    terms_agreed: yes
     csr: "/etc/ssl/requests/{{ lets_encrypt_resource_name }}.csr"
     dest: "{{ lets_encrypt_certificate_build_dir.path }}/01-{{ lets_encrypt_resource_name }}.crt"
     data: "{{ acme_data }}"
