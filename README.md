@@ -6,7 +6,7 @@ itself.
 ## Requirements
 
 - Internet Access
-- Ansible 2.4.0+
+- Ansible 2.8.0+
 - Python2[1](https://github.com/ansible/ansible/issues/30690)
 - pip (installs dependencies if required)
 

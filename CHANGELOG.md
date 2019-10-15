@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to 
 [Semantic Versioning](http://semver.org/).
 
+## 2.0.0
+
+### changed
+- Update to use acme v2, as acme v1 was depricated and removed by letsencrypt
+- Use latest ansible version 1.8.0 (changes might be incompatible with older versions of ansible)
+
+
 ## 1.1.1
 
 ### changed
